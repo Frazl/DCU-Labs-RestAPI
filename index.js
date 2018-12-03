@@ -83,6 +83,10 @@ function consecutive(exclude=undefined) {
 
 var app = express()
 
+app.get('/'), (req ,res) => {
+    res.status(200).send('<a href="https://github.com/Frazl/DCU-Labs-RestAPI">Find documentation to this api on Github</a>')
+}
+
 app.get('/api/v1/max', (req, res) => {
     let result = consecutive([req.query.exclude])
     res.status(200).send(result)
@@ -97,7 +101,7 @@ app.get('/api/v1/lab', (req, res) => {
 })
 
 
-const PORT = 5001;
+const PORT = 21337;
 
 app.listen(PORT, () => {
     console.log(`server running on port ${PORT}`)
@@ -105,8 +109,8 @@ app.listen(PORT, () => {
 
 function run() {
     new Promise(update).then(() => { 
-        let n = consecutive()
-        console.log(n)
+        console.log('Got latest lab times.')
+        console.log(new Date())
     })
 }
 
