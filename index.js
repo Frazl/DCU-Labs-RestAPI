@@ -83,10 +83,6 @@ function consecutive(exclude=undefined) {
 
 var app = express()
 
-app.get('/'), (req ,res) => {
-    res.status(200).send('<a href="https://github.com/Frazl/DCU-Labs-RestAPI">Find documentation to this api on Github</a>')
-}
-
 app.get('/api/v1/max', (req, res) => {
     let result = consecutive([req.query.exclude])
     res.status(200).send(result)
@@ -112,8 +108,7 @@ function run() {
         console.log('Got latest lab times.')
         console.log(new Date())
     })
+    setInterval(run, 1000 * 60 * 10);
 }
-
-setInterval(run, 1000 * 60 * 10);
 
 run()
