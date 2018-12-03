@@ -23,8 +23,8 @@ let update = (res) => {
 }
 
 function getTime(){
-    let hour = new Date().getHours()
-    let minute = new Date().getMinutes()
+    let hour = new Date().getUTCHours()
+    let minute = new Date().getUTCMinutes()
 
     if(minute > 30){
         minute = '00'
@@ -108,7 +108,8 @@ function run() {
         console.log('Got latest lab times.')
         console.log(new Date())
     })
-    setInterval(run, 1000 * 60 * 10);
 }
 
 run()
+
+setInterval(run, 1000 * 60 * 10);
