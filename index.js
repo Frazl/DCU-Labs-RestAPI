@@ -101,7 +101,7 @@ app.get('/api/v1/lab', (req, res) => {
 })
 
 
-const PORT = 21337;
+const PORT = 8181;
 
 app.listen(PORT, () => {
     console.log(`server running on port ${PORT}`)
