@@ -99,7 +99,7 @@ app.get('/api/v1/lab', (req, res) => {
 
 const PORT = 8181;
 
-app.listen(PORT, () => {
+app.listen(process.env.PORT || PORT, () => {
     console.log(`server running on port ${PORT}`)
   });
 
