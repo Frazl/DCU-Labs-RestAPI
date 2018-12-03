@@ -7,10 +7,11 @@ let g_labs = ['LG25', 'LG26', 'LG27', 'L101', 'L114', 'L125', 'L128',]
 let g_data = {}
 
 let update = (res) => {
-    proc = spawn('python3 ./get.py')
+    proc = spawn('python3 get.py')
     
     proc.stdout.on('data', (data) => {
         g_data = JSON.parse(data)
+        console.log('recieved data')
         console.log(data, 'PYTHON DATA')
         g_data.lastUpdate = new Date()
         }
