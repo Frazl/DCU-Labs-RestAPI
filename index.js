@@ -7,7 +7,7 @@ let g_labs = ['LG25', 'LG26', 'LG27', 'L101', 'L114', 'L125', 'L128',]
 let g_data = {}
 
 let update = (res) => {
-    proc = spawn('python3 get.py')
+    proc = spawn('python get.py')
     
     proc.stdout.on('data', (data) => {
         g_data = JSON.parse(data)
