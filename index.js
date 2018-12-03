@@ -11,6 +11,7 @@ let update = (res) => {
     
     proc.stdout.on('data', (data) => {
         g_data = JSON.parse(data)
+        console.log(data, 'PYTHON DATA')
         g_data.lastUpdate = new Date()
         }
     )
