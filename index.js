@@ -89,6 +89,7 @@ app.get('/api/v1/max', (req, res) => {
 })
 
 app.get('/api/v1/labs', (req, res) => {
+    console.log(g_data, 'DEBUG FOR HEROKU')
     res.status(200).send(g_data)
 })
 
