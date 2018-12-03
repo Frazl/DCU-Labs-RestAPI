@@ -3,7 +3,7 @@ express = require('express')
 
 const spawn = require("child_process").exec;
 
-let g_labs = ['LG25', 'LG26', 'LG27', 'L101', 'L114', 'L125', 'L128',]
+const g_labs = ['LG25', 'LG26', 'LG27', 'L101', 'L114', 'L125', 'L128',]
 let g_data = {}
 
 let update = (res) => {
@@ -43,7 +43,7 @@ function getTime(){
 }
 
 function consecutive(exclude=undefined) {
-    let labs = g_labs
+    let labs = [...g_labs]
     let data = g_data
     let result = {}
 
@@ -55,12 +55,13 @@ function consecutive(exclude=undefined) {
     }
     const times = ['08:00','08:30','09:00','09:30','10:00','10:30','11:00','11:30','12:00','12:30','13:00','13:30','14:00','14:30','15:00','15:30','16:00','16:30','17:00', '17:30']
     
-    let nowIndex = times.indexOf(getTime())
+    let time = getTime()
+    let nowIndex = times.indexOf(time)
     if (nowIndex === -1){
         nowIndex = 0
     }
     let avail = []
-    for(let i = nowIndex; i < times.length; i++){
+    for(var i = nowIndex; i < times.length; i++){
         for(labIndex in labs){
             if(data[labs[labIndex]][times[i]] == 'FREE'){
                 avail.push(labs[labIndex])
@@ -73,12 +74,11 @@ function consecutive(exclude=undefined) {
         }
         labs = avail
         avail = []
-        nowIndex = i
 
 
     }
     result.labs = labs
-    result.freeUntill = times[nowIndex]
+    result.freeUntill = times[i]
     return result
 
 }
@@ -86,12 +86,10 @@ function consecutive(exclude=undefined) {
 var app = express()
 
 app.get('/api/v1/max', (req, res) => {
-    let result = consecutive([req.query.exclude])
-    res.status(200).send(result)
+    res.status(200).send(consecutive([req.query.exclude]))
 })
 
 app.get('/api/v1/labs', (req, res) => {
-    console.log(g_data, 'DEBUG FOR HEROKU')
     res.status(200).send(g_data)
 })
 
@@ -110,9 +108,8 @@ function run() {
     new Promise(update).then(() => { 
         console.log('Got latest lab times.')
         console.log(new Date())
+        setInterval(run, 1000 * 60 * 10);
     })
 }
 
 run()
-
-setInterval(run, 1000 * 60 * 10);
