@@ -4,20 +4,22 @@ express = require('express')
 const spawn = require("child_process").exec;
 
 const g_labs = ['LG25', 'LG26', 'LG27', 'L101', 'L114', 'L125', 'L128',]
+
+const c_rooms = ['CG01', 'CG02', 'CG03', 'CG04', 'CG05', 'CG06', 'CG11',
+                 'CG12', 'CG20', 'CG68', 'CG86', 'C166']
 let g_data = {}
 
 let update = (res) => {
     proc = spawn('python get.py')
-    
+    var proc_data = ''
     proc.stdout.on('data', (data) => {
-        g_data = JSON.parse(data)
-        console.log('recieved data')
-        console.log(data, 'PYTHON DATA')
-        g_data.lastUpdate = new Date()
+        proc_data += data
         }
     )
 
     proc.on('exit', () => {
+        g_data = JSON.parse(proc_data)
+        g_data.lastUpdate = new Date()
         console.log('Finished Updating')
         res()
         }
@@ -45,7 +47,6 @@ function getTime(){
 function consecutive(exclude=undefined) {
     let labs = [...g_labs]
     let data = g_data
-    let result = {}
 
     if(exclude !== undefined){
         for(let i = 0; i < exclude.length; i++){
@@ -53,7 +54,7 @@ function consecutive(exclude=undefined) {
             labs.splice(j, 1)
         }
     }
-    const times = ['08:00','08:30','09:00','09:30','10:00','10:30','11:00','11:30','12:00','12:30','13:00','13:30','14:00','14:30','15:00','15:30','16:00','16:30','17:00', '17:30']
+    const times = ['08:00','08:30','09:00','09:30','10:00','10:30','11:00','11:30','12:00','12:30','13:00','13:30','14:00','14:30','15:00','15:30','16:00','16:30','17:00', '17:30', '18:00', '18:30', '19:00', '19:30', '20:00']
     
     let time = getTime()
     let nowIndex = times.indexOf(time)
@@ -68,33 +69,36 @@ function consecutive(exclude=undefined) {
             }
         }
         if(avail.length == 0){
-            result.labs = labs
-            result.freeUntill = times[i]
-            return result
+            break
         }
         labs = avail
         avail = []
 
 
     }
+    let result = {}
     result.labs = labs
     result.freeUntill = times[i]
+    result.lastUpdate = g_data.lastUpdate
     return result
 
 }
 
 var app = express()
 
-app.get('/api/v1/max', (req, res) => {
+app.get('/api/v1/labs/max', (req, res) => {
     res.status(200).send(consecutive([req.query.exclude]))
 })
 
-app.get('/api/v1/labs', (req, res) => {
+app.get('/api/v1/rooms', (req, res) => {
     res.status(200).send(g_data)
 })
 
-app.get('/api/v1/lab', (req, res) => {
-    res.status(200).send(g_data[req.query.lab])
+app.get('/api/v1/room', (req, res) => {
+    let result = g_data[req.query.room]
+    result.lastUpdate = g_data.lastUpdate
+    res.status(200).send(result)
+    result = {}
 })
 
 
