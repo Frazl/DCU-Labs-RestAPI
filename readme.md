@@ -2,7 +2,7 @@
 
 All calls return JSON, all calls are updated every ten minutes and contain a lastUpdate to inform you when it was last updated. 
 
-Feel free to test the API calls on the test heroku deployment, here ['https://dculabs.herokuapp.com/api/v1/'].
+Feel free to test the API calls on the test heroku deployment, [here] (https://dculabs.herokuapp.com/api/v1/).
 ### /api/v1/labs/max
 
 Returns the longest available lab within the school of computing. This is useful when you want to get some study done and not kicked out of labs because there's exams on etc..
