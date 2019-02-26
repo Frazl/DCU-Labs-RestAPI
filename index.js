@@ -1,5 +1,6 @@
 fs = require('fs')
 express = require('express')
+cors = require('cors');
 
 const spawn = require("child_process").exec;
 
@@ -10,7 +11,7 @@ const c_rooms = ['CG01', 'CG02', 'CG03', 'CG04', 'CG05', 'CG06', 'CG11',
 let g_data = {}
 
 let update = (res) => {
-    proc = spawn('python get.py')
+    proc = spawn('python3 get.py')
     var proc_data = ''
     proc.stdout.on('data', (data) => {
         proc_data += data
@@ -62,7 +63,7 @@ function consecutive(exclude=undefined) {
         nowIndex = 0
     }
     let avail = []
-    for(var i = nowIndex; i < times.length; i++){
+    for(var i = nowIndex; i < times.length; i++, nowIndex = i){
         for(labIndex in labs){
             if(data[labs[labIndex]][times[i]] == 'FREE'){
                 avail.push(labs[labIndex])
@@ -78,14 +79,17 @@ function consecutive(exclude=undefined) {
     }
     let result = {}
     result.labs = labs
-    result.freeUntill = times[i]
+    if (i === times.length) {
+    	i -= 1	
+    }
+    result.time = times[i]
     result.lastUpdate = g_data.lastUpdate
     return result
-
 }
 
-var app = express()
-
+var app = express();
+app.use(cors());
+app.options('*', cors());;
 app.get('/api/v1/labs/max', (req, res) => {
     res.status(200).send(consecutive([req.query.exclude]))
 })
